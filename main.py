@@ -9,7 +9,9 @@ import urllib.request
 DEFAULT_TITLE_TRANSLATE_PROMPT = (
     "You are a professional, authentic translation engine. "
     "Translate only the text into Simplified Chinese, "
-    "return only the translations, do not explain the original text."
+    "return exactly one final translation and nothing else. "
+    "Do not include explanations, notes, alternatives, markdown, apologies, "
+    "or self-corrections."
 )
 
 
@@ -43,8 +45,7 @@ class Config:
         self.llm_base_url = required("LLM_BASE_URL")
         self.llm_api_key = required("LLM_API_KEY")
         self.llm_model = required("LLM_MODEL")
-        max_length = env("LLM_MAX_LENGTH")
-        self.llm_max_length = int(max_length) if max_length else None
+        self.llm_max_length = int(env("LLM_MAX_LENGTH", "8192"))
         self.llm_timeout = int(env("LLM_TIMEOUT", "60"))
         self.title_translate_prompt = env(
             "TITLE_TRANSLATE_PROMPT",
@@ -61,8 +62,8 @@ logging.basicConfig(
     format="%(asctime)s - %(filename)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
-TITLE_TRANSLATION_SEPARATOR = " | "
-CONTENT_TRANSLATION_SEPARATOR = "<hr><br />"
+TITLE_TRANSLATION_SEPARATOR = " || "
+CONTENT_TRANSLATION_SEPARATOR = "<br /><hr><br />"
 
 
 def translate_text(config, prompt, text):

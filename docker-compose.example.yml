@@ -9,7 +9,7 @@ services:
       LLM_BASE_URL: "https://api.openai.com/v1"
       LLM_API_KEY: "sk-your_openai_api_key"
       LLM_MODEL: "gpt-4.1-mini"
-      # LLM_MAX_LENGTH: "4096"
+      # LLM_MAX_LENGTH: "8192"
       # LLM_TIMEOUT: "60"
       # TITLE_TRANSLATE_PROMPT: "your custom title prompt"
       # CONTENT_TRANSLATE_PROMPT: "your custom content prompt"
