@@ -1,0 +1,8 @@
+.DS_Store
+.git
+.gitignore
+.transflux
+__pycache__
+tests
+AGENTS.md
+README.md

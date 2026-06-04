@@ -1,0 +1,5 @@
+.DS_Store
+.transflux/
+__pycache__/
+tests/
+AGENTS.md
