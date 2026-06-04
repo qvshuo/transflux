@@ -11,7 +11,7 @@ git clone https://github.com/qvshuo/transflux.git --depth=1
 cd transflux
 ```
 
-复制 Compose 示例文件并修改 `docker-compose.yml` 中的环境变量，然后运行：
+复制 Compose 示例文件并修改 `docker-compose.yml` 中的环境变量：
 
 ```bash
 cp docker-compose.example.yml docker-compose.yml
@@ -44,8 +44,8 @@ docker compose build --no-cache
 | `LLM_MODEL` | 是 | — | 模型名称 |
 | `LLM_MAX_LENGTH` | 否 | `8192` | 发送给 LLM 前的最大字符数 |
 | `LLM_TIMEOUT` | 否 | `60` | 请求超时秒数 |
-| `TITLE_TRANSLATE_PROMPT` | 否 | 内置提示词 | 条目标题翻译提示词 |
-| `CONTENT_TRANSLATE_PROMPT` | 否 | 内置提示词 | 条目内容翻译提示词 |
+| `TITLE_TRANSLATE_PROMPT` | 否 | 内置提示词 | 标题翻译提示词 |
+| `CONTENT_TRANSLATE_PROMPT` | 否 | 内置提示词 | 内容翻译提示词 |
 
 默认标题翻译提示词会直接返回简体中文译文。默认内容翻译提示词会保留 HTML 标签、属性和结构，只翻译可见文本为简体中文。可以通过环境变量自定义提示词。
 
