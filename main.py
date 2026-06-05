@@ -2,7 +2,6 @@ import logging
 import os
 import re
 import time
-from typing import Any
 
 import httpx
 import miniflux
@@ -68,7 +67,7 @@ TITLE_TRANSLATION_SEPARATOR = " ||| "
 CONTENT_TRANSLATION_SEPARATOR = '<br /><hr data-transflux="translated">'
 
 
-def already_translated(entry: dict[str, Any]) -> bool:
+def already_translated(entry):
     title = entry.get("title") or ""
     content = entry.get("content") or ""
     return (
@@ -77,14 +76,14 @@ def already_translated(entry: dict[str, Any]) -> bool:
     )
 
 
-def build_messages(prompt: str, text: str) -> list[dict[str, str]]:
+def build_messages(prompt, text):
     return [
         {"role": "system", "content": prompt},
         {"role": "user", "content": text},
     ]
 
 
-def call_llm(config: "Config", messages: list[dict[str, str]]) -> str:
+def call_llm(config, messages):
     url = config.llm_base_url.rstrip("/") + "/chat/completions"
     headers = {
         "Content-Type": "application/json",
@@ -115,11 +114,11 @@ def call_llm(config: "Config", messages: list[dict[str, str]]) -> str:
     raise RuntimeError(f"LLM request failed after retries: {last_error}")
 
 
-def translate_text(config: "Config", prompt: str, text: str) -> str:
+def translate_text(config, prompt, text):
     return call_llm(config, build_messages(prompt, text))
 
 
-def is_chinese_content(text: str, threshold: float = 0.05) -> bool:
+def is_chinese_content(text, threshold=0.05):
     if not text:
         return False
 
@@ -133,62 +132,34 @@ def is_chinese_content(text: str, threshold: float = 0.05) -> bool:
     return cjk_chars / len(plain) > threshold
 
 
-def process_entry(config: "Config", miniflux_client: Any, entry: dict[str, Any]) -> None:
+def process_entry(config, miniflux_client, entry):
     entry_id = entry["id"]
-    original_title = entry.get("title") or ""
-    original_content = entry.get("content") or ""
 
     if already_translated(entry):
         logger.info("skip translated entry id:%s", entry_id)
         return
 
-    new_title = None
-    new_content = None
-
     try:
-        if not original_title:
-            logger.info("skip empty title entry id:%s", entry_id)
-        elif is_chinese_content(original_title):
-            logger.info("skip zh title entry id:%s", entry_id)
-        elif config.llm_max_length and len(original_title) > config.llm_max_length:
-            logger.warning(
-                "skip long title translation entry id:%s length:%s max:%s",
-                entry_id,
-                len(original_title),
-                config.llm_max_length,
-            )
-        else:
-            translated_title = translate_text(
-                config,
-                config.title_translate_prompt,
-                original_title,
-            )
-            new_title = translated_title + TITLE_TRANSLATION_SEPARATOR + original_title
-
-        if not original_content:
-            logger.info("skip empty content entry id:%s", entry_id)
-        elif is_chinese_content(original_content):
-            logger.info("skip zh content entry id:%s", entry_id)
-        elif config.llm_max_length and len(original_content) > config.llm_max_length:
-            logger.warning(
-                "skip long content translation entry id:%s length:%s max:%s",
-                entry_id,
-                len(original_content),
-                config.llm_max_length,
-            )
-        else:
-            translated_content = translate_text(
-                config,
-                config.content_translate_prompt,
-                original_content,
-            )
-            new_content = translated_content + CONTENT_TRANSLATION_SEPARATOR + original_content
-
         update_fields = {}
-        if new_title is not None:
-            update_fields["title"] = new_title
-        if new_content is not None:
-            update_fields["content"] = new_content
+        for field, prompt, separator in (
+            ("title", config.title_translate_prompt, TITLE_TRANSLATION_SEPARATOR),
+            ("content", config.content_translate_prompt, CONTENT_TRANSLATION_SEPARATOR),
+        ):
+            original = entry.get(field) or ""
+            if not original:
+                logger.info("skip empty %s entry id:%s", field, entry_id)
+            elif is_chinese_content(original):
+                logger.info("skip zh %s entry id:%s", field, entry_id)
+            elif config.llm_max_length and len(original) > config.llm_max_length:
+                logger.warning(
+                    "skip long %s translation entry id:%s length:%s max:%s",
+                    field,
+                    entry_id,
+                    len(original),
+                    config.llm_max_length,
+                )
+            else:
+                update_fields[field] = translate_text(config, prompt, original) + separator + original
 
         if not update_fields:
             logger.info("skip entry id:%s no update needed", entry_id)
@@ -204,7 +175,7 @@ def process_entry(config: "Config", miniflux_client: Any, entry: dict[str, Any])
     logger.info("entry_id:%s result:%s", entry_id, log_preview)
 
 
-def process_unread_entries(config: "Config", miniflux_client: Any) -> None:
+def process_unread_entries(config, miniflux_client):
     entries_response = miniflux_client.get_entries(status=["unread"], limit=1000)
     unread_entries = entries_response["entries"]
     if unread_entries:
@@ -217,7 +188,7 @@ def process_unread_entries(config: "Config", miniflux_client: Any) -> None:
         process_entry(config, miniflux_client, entry)
 
 
-def wait_for_miniflux(miniflux_client: Any) -> None:
+def wait_for_miniflux(miniflux_client):
     delay = 3
     while True:
         try:
@@ -231,7 +202,7 @@ def wait_for_miniflux(miniflux_client: Any) -> None:
             delay = min(delay * 2, 300)
 
 
-def main() -> None:
+def main():
     config = Config()
     miniflux_client = miniflux.Client(
         config.miniflux_base_url, api_key=config.miniflux_api_key
