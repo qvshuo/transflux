@@ -2,7 +2,7 @@
 
 翻译 Miniflux 未读条目为简体中文。
 
-## 快速开始
+### 快速开始
 
 克隆项目：
 
@@ -35,7 +35,7 @@ docker compose logs -f
 docker compose build --no-cache
 ```
 
-## 环境变量
+### 环境变量
 
 | 变量                         | 必填 | 默认值    | 说明               |
 | -------------------------- | -- | ------ | ---------------- |
@@ -49,6 +49,6 @@ docker compose build --no-cache
 | `TITLE_TRANSLATE_PROMPT`   | 否  | 内置提示词  | 标题翻译提示词          |
 | `CONTENT_TRANSLATE_PROMPT` | 否  | 内置提示词  | 内容翻译提示词          |
 
-## 致谢
+### 致谢
 
-本项目的灵感及初始代码来自于 [Qetesh/miniflux-ai](https://github.com/Qetesh/miniflux-ai)，默认翻译提示词来自于 [versun/rssbox](https://github.com/versun/rssbox)。
+本项目的灵感及初始代码来源于 [Qetesh/miniflux-ai](https://github.com/Qetesh/miniflux-ai)，默认翻译提示词来源于 [versun/rssbox](https://github.com/versun/rssbox)。
