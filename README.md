@@ -1,6 +1,6 @@
 # transflux
 
-自动将 Miniflux 未读条目中的非中文内容翻译为简体中文。
+翻译 Miniflux 未读条目为简体中文。
 
 ## 快速开始
 
