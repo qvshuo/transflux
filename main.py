@@ -64,7 +64,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 TITLE_TRANSLATION_SEPARATOR = " ||| "
-CONTENT_TRANSLATION_SEPARATOR = '<br /><hr data-transflux="translated">'
+CONTENT_TRANSLATION_SEPARATOR = '<br /><hr data-fluxhans="translated">'
 
 
 def already_translated(entry):

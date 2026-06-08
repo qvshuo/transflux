@@ -1,4 +1,4 @@
-# transflux
+# FluxHans
 
 翻译 Miniflux 未读条目为简体中文。
 
@@ -7,8 +7,8 @@
 克隆项目：
 
 ```shell
-git clone https://github.com/qvshuo/transflux.git --depth=1
-cd transflux
+git clone https://github.com/qvshuo/FluxHans.git --depth=1
+cd FluxHans
 ```
 
 复制 Compose 示例文件，并根据实际情况修改 `docker-compose.yml` 中的环境变量：

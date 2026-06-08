@@ -1,6 +1,6 @@
 services:
-  transflux:
-    container_name: transflux
+  fluxhans:
+    container_name: fluxhans
     build: .
     restart: unless-stopped
     environment:

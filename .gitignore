@@ -1,5 +1,5 @@
 .DS_Store
-.transflux/
+.fluxhans/
 __pycache__/
 tests/
 AGENTS.md

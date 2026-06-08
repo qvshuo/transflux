@@ -1,7 +1,7 @@
 .DS_Store
 .git
 .gitignore
-.transflux
+.fluxhans
 __pycache__
 tests
 AGENTS.md
